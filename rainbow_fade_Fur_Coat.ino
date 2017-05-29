@@ -57,19 +57,17 @@ void loop() {
 /////////////////////////////////////////////////////////////////
 //  Serial.print("interrupt_flag ");
 //  Serial.println(interrupt_flag);
-  if (interrupt_flag) {
-    
+  if (interrupt_flag) {    
     state = !state;
     cli();
     interrupt_flag = 0;
     sei();
-
   }
   
 //  Serial.print("state ");
 //  Serial.println(state);
   if (state == 0) {
-    startGradiant(1,0,20,5); // gradiant without powered led startGradiant(int color_jump, int power_jump,int delayval, int num_of_cycles)
+    startGradiant(1,0,20,200); // gradiant without powered led startGradiant(int color_jump, int power_jump,int delayval, int num_of_cycles)
   } else {
     startWings(60,500,17); //startWings(int delay_time, int time_left, int num_of_colors)
   }
@@ -96,7 +94,10 @@ void startWings(int delay_time, int time_left, int num_of_colors) {
 /////////////////////////////////////////////////////////////////  
    int j=0;
    clearAll();   
-   while (time_left > 0) {     
+   while (time_left > 0) {   
+    if (interrupt_flag) {    
+      return;
+    }  
     setWingLine(getColor(j,POWER,num_of_colors),NUMPIXELS,0);
     setWingLine(getColor(j+1,POWER,num_of_colors),NUMPIXELS2,NUMPIXELS);
     setWingLine(getColor(j+2,POWER,num_of_colors),NUMPIXELS3,NUMPIXELS+NUMPIXELS2);
@@ -137,14 +138,17 @@ void startGradiant(int color_jump, int power_jump,int delayval, int num_of_cycle
   int color_add =color_jump;
   int power_add =power_jump;
   for (int a =1 ; a<2*max_pix*num_of_cycles;a++) { // number of cycles it will run 
+    if (interrupt_flag) {    
+      return;
+    }
 //    Serial.println(power_i);
     //    Serial.println(max_pix);
     color_i = color_i +color_add;
     power_i = power_i + power_add;
     if (color_i >= max_pix) {
-        color_add = -color_jump;
+      //  color_add = -color_jump;
     } else if (color_i <= 0) {
-        color_add = color_jump;
+      //  color_add = color_jump;
     }
     if (power_i > max_pix) {
       power_add = -power_jump;
