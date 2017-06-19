@@ -23,18 +23,18 @@
 //
 // The outline starts beneath left-front pocket, going to the rear
 
-int numOfPixelsSide = NUMPIXELS1+NUMPIXELS2+NUMPIXELS3;
+#define NUMOFPIXELSIDE  NUMPIXELS1+NUMPIXELS2+NUMPIXELS3
 // Define the array of leds
-CRGB ledsOutlineL[numOfPixelsSide];
-CRGB ledsOutlineR[numOfPixelsSide];
+CRGB ledsOutlineL[NUMOFPIXELSIDE];
+CRGB ledsOutlineR[NUMOFPIXELSIDE];
 CRGB ledsOutlineM[NUMPIXELS_M];
 
 
 void setup() { 
   Serial.begin(57600);
   Serial.println("resetting");
-  LEDS.addLeds<NEOPIXEL,PINL>(ledsOutlineL,numOfPixelsSide);
-  LEDS.addLeds<NEOPIXEL,PINR>(ledsOutlineR,numOfPixelsSide);
+  LEDS.addLeds<NEOPIXEL,PINL>(ledsOutlineL,NUMOFPIXELSIDE);
+  LEDS.addLeds<NEOPIXEL,PINR>(ledsOutlineR,NUMOFPIXELSIDE);
   LEDS.addLeds<NEOPIXEL,PINM>(ledsOutlineM,NUMPIXELS_M);
   LEDS.setBrightness(54);
 }
@@ -42,8 +42,8 @@ void setup() {
 
 void outlineWave() {  
   unsigned long now = millis();
-  outlineWaveStrip(now,numOfPixelsSide,ledsOutlineL);
-  outlineWaveStrip(now,numOfPixelsSide,ledsOutlineR);
+  outlineWaveStrip(now,NUMOFPIXELSIDE,ledsOutlineL);
+  outlineWaveStrip(now,NUMOFPIXELSIDE,ledsOutlineR);
   outlineWaveStrip(now,NUMPIXELS_M,ledsOutlineM);
   
 }
