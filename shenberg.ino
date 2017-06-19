@@ -1,9 +1,5 @@
 #include "FastLED.h"
 
-// How many leds in your strip?
-#define OUTLINE_NUM_LEDS 95 
-
-
 #define PINL 13
 #define PINR 12
 #define PINM 11
@@ -15,13 +11,6 @@
 
 #define NUMPIXELS_M     27
 
-// Outline structure:
-// left sleeve and right sleeve are both wired to outline beginning
-// left sleeve has 13 LEDs
-// right sleeev 12 LEDS
-// they show the same pixels as the first pixels on the outline
-//
-// The outline starts beneath left-front pocket, going to the rear
 
 #define NUMOFPIXELSIDE  NUMPIXELS1+NUMPIXELS2+NUMPIXELS3
 // Define the array of leds
@@ -31,7 +20,7 @@ CRGB ledsOutlineM[NUMPIXELS_M];
 
 
 void setup() { 
-  Serial.begin(57600);
+  Serial.begin(9600);
   Serial.println("resetting");
   LEDS.addLeds<NEOPIXEL,PINL>(ledsOutlineL,NUMOFPIXELSIDE);
   LEDS.addLeds<NEOPIXEL,PINR>(ledsOutlineR,NUMOFPIXELSIDE);
@@ -64,7 +53,6 @@ void outlineWaveStrip(unsigned long now, int numOfPixels,CRGB * ledsOutline) {
 }
 
 void loop() { 
-  static uint8_t hue = 0;
   outlineWave();
   FastLED.show();
   FastLED.delay(5);
