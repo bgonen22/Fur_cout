@@ -88,13 +88,19 @@ void startUpWave(int add_delay) {
 /////////////////////////////////////////////////////////////////
   unsigned long now = millis();
   outlineWaveStrip(now,0,NUMPIXELS1,ledsOutlineL);  
+  now += add_delay;
   outlineWaveStrip(now,NUMPIXELS1,NUMPIXELS2,ledsOutlineL);
+  now += add_delay;
   outlineWaveStrip(now,NUMPIXELS1+NUMPIXELS2,NUMPIXELS3,ledsOutlineL);
   
+  now += add_delay;
   outlineWaveStrip(now,0,NUMPIXELS1,ledsOutlineR);
+  now += add_delay;
   outlineWaveStrip(now,NUMPIXELS1,NUMPIXELS2,ledsOutlineR);
+  now += add_delay;
   outlineWaveStrip(now,NUMPIXELS1+NUMPIXELS2,NUMPIXELS3,ledsOutlineR);
-    
+
+  now += add_delay;
   outlineWaveStrip(now,0,NUMPIXELS_M,ledsOutlineM);  
 }
 
