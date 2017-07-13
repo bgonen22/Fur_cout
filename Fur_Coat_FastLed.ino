@@ -19,6 +19,7 @@ CRGB ledsOutlineL[NUMOFPIXELSIDE];
 CRGB ledsOutlineR[NUMOFPIXELSIDE];
 CRGB ledsOutlineM[NUMPIXELS_M];
 
+int max_pix;
 volatile int state = 0;
 /////////////////////////////////////////////////////////////////
 void setup() { 
@@ -31,6 +32,8 @@ void setup() {
   LEDS.setBrightness(54);
   pinMode(PinInt, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PinInt), OnInterupt, FALLING); 
+  max_pix = max(NUMPIXELS1,NUMPIXELS2);
+  max_pix = max(max_pix,NUMPIXELS3);
 }
 
 /////////////////////////////////////////////////////////////////
@@ -69,14 +72,84 @@ void loop() {
     Serial.println("startUpWave");
     startUpWave(0);
   } else if (state == 2) {
-    Serial.println("startUpWave 5 delay");
-    startUpWave(5);
+    Serial.println("startGradiant");
+    //startUpWave(5);
+    startGradiant(1,50,1);
   }
   FastLED.show();
   FastLED.delay(5);
 
 }
+/////////////////////////////////////////////////////////////////
+void startGradiant(int color_jump, int delayval, bool one_direction) {
+/////////////////////////////////////////////////////////////////
+  int color_i =0;
+  //int power_i = 0;
+  int color_add =color_jump;
+  //int power_add =power_jump;
+  while (1) {  
+    if (state != 2) {    
+      return;
+    }
 
+    //    Serial.println(max_pix);
+    color_i = (color_i +color_add) %255;  
+    if (!one_direction && color_i >= max_pix) {
+        color_add = -color_jump;
+    } else if (!one_direction && color_i <= 0) {
+        color_add = color_jump;
+    }   
+    gradiant(color_i);
+    FastLED.show();
+    FastLED.delay(delayval); // Delay for a period of time (in milliseconds).
+
+
+    //Serial.println(color_i);
+  }
+}
+
+/////////////////////////////////////////////////////////////////
+// gradiant:
+//   color_i - color changing from the index base color (for color movement)
+//   strip - 0 - both strips; 1 - strip 1; 2 - strip 2
+//   line  - 0 - all the lines ; 1 - line 1; 2 - line 2; 3- line 3 (ecery strip has 3 lines: up-down-up
+/////////////////////////////////////////////////////////////////
+void gradiant(int color_i) { 
+/////////////////////////////////////////////////////////////////  
+  for(int i=0;i<max_pix;i++){  
+    // FIRST LINE
+    if (i<NUMPIXELS1) {
+      setLed(ledsOutlineL,i,i+color_i);
+      setLed(ledsOutlineM,i,i+color_i);
+      setLed(ledsOutlineR,i,i+color_i);
+    }
+ 
+    // SECOND LINE
+    int index= NUMPIXELS1+NUMPIXELS2-1-i;
+    if (index>=NUMPIXELS1 && index <= NUMPIXELS1+NUMPIXELS2) {
+      setLed(ledsOutlineL,index,i+color_i);
+      setLed(ledsOutlineM,index,i+color_i);
+      setLed(ledsOutlineR,index,i+color_i);    
+    }
+ 
+
+    // THIRD LINE       
+     index= NUMPIXELS1+NUMPIXELS2+i;
+     setLed(ledsOutlineL,index,i+color_i);
+     setLed(ledsOutlineM,index,i+color_i);
+     setLed(ledsOutlineR,index,i+color_i);       
+  } 
+}
+/////////////////////////////////////////////////////////////////
+void setLed(CRGB * ledsOutline, int i,int color_num) { 
+/////////////////////////////////////////////////////////////////
+  color_num = (11*color_num)%255;
+  //Serial.print("color_num ");
+  //Serial.println(color_num);
+  //Serial.print("i ");
+  //Serial.println(i);  
+  ledsOutline[i] = CHSV(color_num, 255, 255);
+}
 /////////////////////////////////////////////////////////////////
 void startSnake() { 
 /////////////////////////////////////////////////////////////////
